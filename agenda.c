@@ -50,7 +50,7 @@ void menu()
             inserirContato();
             break;
         case 2:
-            //editarContato();
+            editarContato();
             break;
         case 3:
             buscarContatoNome();
@@ -119,10 +119,9 @@ void editarContato()
     int contadorLinhas = 0;
     char ch;
     FILE *pf1, *pf2;
-    char fname[MAX];
+    char arquivoReferencia[] = "agenda.txt";
     char str[MAX], temp[] = "temp.txt";
-    printf(" Input the file name to be opened : ");
-    pf1 = fopen("agenda.txt", "r");
+    pf1 = fopen(arquivoReferencia, "r");
     if (!pf1)
     {
         printf("Erro ao abrir o arquivo!!\n");
@@ -135,8 +134,9 @@ void editarContato()
         fclose(pf1);
         return 1;
     }
-    printf("Qual o número do contato que deseja excluir? ");
+    printf("Qual o numero do contato que deseja editar? ");
     scanf("%d", &removeContato);
+    getchar();
 
     while (!feof(pf1))
     {
@@ -149,12 +149,36 @@ void editarContato()
             {
                 fprintf(pf2, "%s", str);
             }
+            else if (contadorLinhas == removeContato)
+            {
+                contato_t contatoEdicao;
+                printf("Digite o nome:\n");
+                fgets(contatoEdicao.nome, 96, stdin);
+                contatoEdicao.nome[strlen(contatoEdicao.nome) - 1] = '\0';
+
+                printf("Digite o cpf:\n");
+                fgets(contatoEdicao.cpf, 12, stdin);
+                contatoEdicao.nome[strlen(contatoEdicao.cpf) - 1] = '\0';
+
+                printf("Digite o dia: ");
+                scanf("%i", &contatoEdicao.aniversario.dia);
+
+                printf("Digite o mes: ");
+                scanf("%i", &contatoEdicao.aniversario.mes);
+
+                printf("Digite o ano: ");
+                scanf("%i", &contatoEdicao.aniversario.ano);
+
+                const char *PERSON_FORMAT = "%s, %s, %d/%d/%d\n";
+
+                fprintf(pf2, PERSON_FORMAT, contatoEdicao.nome, contatoEdicao.cpf, contatoEdicao.aniversario.dia, contatoEdicao.aniversario.mes, contatoEdicao.aniversario.ano);
+            }
         }
     }
     fclose(pf1);
     fclose(pf2);
-    remove(fname);
-    rename(temp, fname);
+    remove(arquivoReferencia);
+    rename(temp, arquivoReferencia);
 
     fclose(pf1);
 }
