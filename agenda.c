@@ -112,6 +112,53 @@ void inserirContato()
     }
 }
 
+void editarContato()
+{
+
+    int removeContato;
+    int contadorLinhas = 0;
+    char ch;
+    FILE *pf1, *pf2;
+    char fname[MAX];
+    char str[MAX], temp[] = "temp.txt";
+    printf(" Input the file name to be opened : ");
+    pf1 = fopen("agenda.txt", "r");
+    if (!pf1)
+    {
+        printf("Erro ao abrir o arquivo!!\n");
+        return 1;
+    }
+    pf2 = fopen(temp, "w"); // open the temporary file in write mode
+    if (!pf2)
+    {
+        printf("Erro ao abrir o arquivo temporario!!!\n");
+        fclose(pf1);
+        return 1;
+    }
+    printf("Qual o número do contato que deseja excluir? ");
+    scanf("%d", &removeContato);
+
+    while (!feof(pf1))
+    {
+        strcpy(str, "\0");
+        fgets(str, MAX, pf1);
+        if (!feof(pf1))
+        {
+            contadorLinhas++;
+            if (contadorLinhas != removeContato)
+            {
+                fprintf(pf2, "%s", str);
+            }
+        }
+    }
+    fclose(pf1);
+    fclose(pf2);
+    remove(fname);
+    rename(temp, fname);
+
+    fclose(pf1);
+}
+
 void buscarContatoNome()
 {
 
@@ -194,16 +241,13 @@ void buscarContatoAniversario()
 
 void excluirContato()
 {
-
     int removeContato;
     int contadorLinhas = 0;
     char ch;
     FILE *pf1, *pf2;
-    char fname[MAX];
+    char arquivoReferencia[] = "agenda.txt";
     char str[MAX], temp[] = "temp.txt";
-    printf(" Input the file name to be opened : ");
-    scanf("%s", fname);
-    pf1 = fopen(fname, "r");
+    pf1 = fopen(arquivoReferencia, "r");
     if (!pf1)
     {
         printf("Erro ao abrir o arquivo!!\n");
@@ -216,7 +260,7 @@ void excluirContato()
         fclose(pf1);
         return 1;
     }
-    printf(" Input the line you want to remove : ");
+    printf("Qual o numero do contato que deseja excluir? ");
     scanf("%d", &removeContato);
 
     while (!feof(pf1))
@@ -234,8 +278,8 @@ void excluirContato()
     }
     fclose(pf1);
     fclose(pf2);
-    remove(fname);
-    rename(temp, fname);
+    remove(arquivoReferencia);
+    rename(temp, arquivoReferencia);
 
     fclose(pf1);
 }
