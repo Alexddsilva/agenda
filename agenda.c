@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#define MAX 15000
+const char *PERSON_FORMAT_IN = "%[a-zA-Z ], %[0-9], %d/%d/%d";
 
 typedef struct data
 {
@@ -15,7 +17,11 @@ typedef struct contato
 
 void menu();
 void inserirContato();
-void buscarContato();
+void editarContato();
+void buscarContatoNome();
+void buscarContatoAniversario();
+void ExcluirContato();
+void listarContatos();
 
 int main()
 {
@@ -34,7 +40,8 @@ void menu()
         printf("3- Buscar contato:\n");
         printf("4- Buscar aniversariante:\n");
         printf("5- Excluir um contato:\n");
-        printf("6- Sair:\n");
+        printf("6- Listar Contatos:\n");
+        printf("7- Sair:\n");
         scanf("%d", &op);
         getchar();
         switch (op)
@@ -52,9 +59,12 @@ void menu()
             buscarContatoAniversario();
             break;
         case 5:
-            printf("inserir");
+            excluirContato();
             break;
         case 6:
+            listarContatos();
+            break;
+        case 7:
             return;
         default:
             printf("opcao invalida tente novamente\n");
@@ -124,7 +134,6 @@ void buscarContatoNome()
 
         while (!feof(pf))
         {
-
             contato_t contato;
             sscanf(buffer, PERSON_FORMAT_IN, contato.nome, contato.cpf, &contato.aniversario.dia, &contato.aniversario.mes, &contato.aniversario.ano);
 
@@ -180,5 +189,92 @@ void buscarContatoAniversario()
         }
 
         fclose(pf);
+    }
+}
+
+void excluirContato()
+{
+
+    int removeContato;
+    int contadorLinhas = 0;
+    char ch;
+    FILE *pf1, *pf2;
+    char fname[MAX];
+    char str[MAX], temp[] = "temp.txt";
+    printf(" Input the file name to be opened : ");
+    scanf("%s", fname);
+    pf1 = fopen(fname, "r");
+    if (!pf1)
+    {
+        printf("Erro ao abrir o arquivo!!\n");
+        return 1;
+    }
+    pf2 = fopen(temp, "w"); // open the temporary file in write mode
+    if (!pf2)
+    {
+        printf("Erro ao abrir o arquivo temporario!!!\n");
+        fclose(pf1);
+        return 1;
+    }
+    printf(" Input the line you want to remove : ");
+    scanf("%d", &removeContato);
+
+    while (!feof(pf1))
+    {
+        strcpy(str, "\0");
+        fgets(str, MAX, pf1);
+        if (!feof(pf1))
+        {
+            contadorLinhas++;
+            if (contadorLinhas != removeContato)
+            {
+                fprintf(pf2, "%s", str);
+            }
+        }
+    }
+    fclose(pf1);
+    fclose(pf2);
+    remove(fname);
+    rename(temp, fname);
+
+    fclose(pf1);
+}
+
+void listarContatos()
+{
+    FILE *pf;
+    pf = fopen("agenda.txt", "r");
+
+    if (pf == NULL)
+    {
+        printf("Error!");
+        return;
+    }
+    else
+    {
+        char buffer[150];
+        const char *PERSON_FORMAT_IN = "%[a-zA-Z ], %[0-9], %d/%d/%d"; // string que irá ler -> "Alex Silva, 44561575855, 2/1/1995"
+        int i = 0;
+        fgets(buffer, 150, pf);
+
+        while (!feof(pf))
+        {
+            i++;
+            contato_t contato;
+            sscanf(buffer, PERSON_FORMAT_IN, contato.nome, contato.cpf, &contato.aniversario.dia, &contato.aniversario.mes, &contato.aniversario.ano);
+
+            printf("-----------------------------------------------------\n");
+            printf("%i -> %s, %s, %d/%d/%d\n", i, contato.nome, contato.cpf, contato.aniversario.dia, contato.aniversario.mes, contato.aniversario.ano);
+            fgets(buffer, 150, pf);
+        }
+        if (i == 0)
+        {
+            printf("-----------------------------------------------------\n");
+            printf("Nenhum contato encontrado na sua agenda.\n");
+        }
+
+        fclose(pf);
+        printf("\n\n");
+        system("PAUSE");
     }
 }
