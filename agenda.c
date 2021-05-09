@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #define MAX 15000
-const char *PERSON_FORMAT_IN = "%[a-zA-Z ], %[0-9], %d/%d/%d";
+const char *PERSON_FORMAT_IN = "%[a-zA-Z ], %[0-9], %d/%d/%d"; // leitura -> Alex Silva, 44561575855, 23/1/1995
+const char *PERSON_FORMAT = "%s, %s, %d/%d/%d\n";
 
 typedef struct data
 {
@@ -11,7 +12,7 @@ typedef struct data
 typedef struct contato
 {
     char nome[96];
-    char cpf[12];
+    char cpf[11];
     data_t aniversario;
 } contato_t;
 
@@ -35,13 +36,13 @@ void menu()
     while (1)
     {
         printf("-----------------------------------------------------\n");
-        printf("\n1- Inserir um contato:\n");
-        printf("2- Editar um contato:\n");
-        printf("3- Buscar contato:\n");
-        printf("4- Buscar aniversariante:\n");
-        printf("5- Excluir um contato:\n");
-        printf("6- Listar Contatos:\n");
-        printf("7- Sair:\n");
+        printf("\n1- Inserir um contato\n");
+        printf("2- Editar um contato\n");
+        printf("3- Buscar contato\n");
+        printf("4- Buscar aniversariante\n");
+        printf("5- Excluir um contato\n");
+        printf("6- Listar Contatos\n");
+        printf("7- Sair\n");
         scanf("%d", &op);
         getchar();
         switch (op)
@@ -104,8 +105,6 @@ void inserirContato()
         printf("Digite o ano: ");
         scanf("%i", &novoContato.aniversario.ano);
 
-        const char *PERSON_FORMAT = "%s, %s, %d/%d/%d\n";
-
         fprintf(pf, PERSON_FORMAT, novoContato.nome, novoContato.cpf, novoContato.aniversario.dia, novoContato.aniversario.mes, novoContato.aniversario.ano);
 
         fclose(pf);
@@ -127,7 +126,7 @@ void editarContato()
         printf("Erro ao abrir o arquivo!!\n");
         return 1;
     }
-    pf2 = fopen(temp, "w"); // open the temporary file in write mode
+    pf2 = fopen(temp, "w");
     if (!pf2)
     {
         printf("Erro ao abrir o arquivo temporario!!!\n");
@@ -169,8 +168,6 @@ void editarContato()
                 printf("Digite o ano: ");
                 scanf("%i", &contatoEdicao.aniversario.ano);
 
-                const char *PERSON_FORMAT = "%s, %s, %d/%d/%d\n";
-
                 fprintf(pf2, PERSON_FORMAT, contatoEdicao.nome, contatoEdicao.cpf, contatoEdicao.aniversario.dia, contatoEdicao.aniversario.mes, contatoEdicao.aniversario.ano);
             }
         }
@@ -197,7 +194,6 @@ void buscarContatoNome()
     else
     {
         char buffer[150];
-        const char *PERSON_FORMAT_IN = "%[a-zA-Z ], %[0-9], %d/%d/%d"; // string que irá ler -> "Alex Silva, 44561575855, 2/1/1995"
         printf("Qual o nome do contato voce quer buscar?\n");
         char nome[96];
         scanf("%[a-zA-Z ]", nome);
@@ -239,7 +235,6 @@ void buscarContatoAniversario()
     else
     {
         char buffer[150];
-        const char *PERSON_FORMAT_IN = "%[a-zA-Z ], %[0-9], %d/%d/%d"; // string que irá ler -> "Alex Silva, 44561575855, 2/1/1995"
         printf("Qual dia/mes voce quer buscar nos contatos?  (ex: 1/12)\n");
         int dia, mes;
         scanf("%d/%d", &dia, &mes);
@@ -277,7 +272,7 @@ void excluirContato()
         printf("Erro ao abrir o arquivo!!\n");
         return 1;
     }
-    pf2 = fopen(temp, "w"); // open the temporary file in write mode
+    pf2 = fopen(temp, "w");
     if (!pf2)
     {
         printf("Erro ao abrir o arquivo temporario!!!\n");
@@ -321,7 +316,6 @@ void listarContatos()
     else
     {
         char buffer[150];
-        const char *PERSON_FORMAT_IN = "%[a-zA-Z ], %[0-9], %d/%d/%d"; // string que irá ler -> "Alex Silva, 44561575855, 2/1/1995"
         int i = 0;
         fgets(buffer, 150, pf);
 
